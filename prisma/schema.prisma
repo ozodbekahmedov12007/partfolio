@@ -1,0 +1,90 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Admin {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Project {
+  id             String    @id @default(uuid())
+  title          String
+  title_uz       String?
+  title_ru       String?
+  description    String
+  description_uz String?
+  description_ru String?
+  techStack      String    // Stored as JSON string array
+  githubLink     String?
+  liveLink       String?
+  imageUrl       String?
+  views          Int       @default(0)
+  likes          Int       @default(0)
+  comments       Comment[]
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  text      String
+  author    String   @default("Anonymous")
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+model Skill {
+  id          String   @id @default(uuid())
+  name        String
+  category    String   // e.g., "Frontend", "Backend", "Tools"
+  category_uz String?
+  category_ru String?
+  percentage  Int      @default(80)
+  createdAt   DateTime @default(now())
+}
+
+model SocialLink {
+  id        String   @id @default(uuid())
+  platform  String   // e.g., "Instagram", "LinkedIn", "GitHub"
+  url       String
+  createdAt DateTime @default(now())
+}
+
+model Article {
+  id             String   @id @default(uuid())
+  title          String
+  title_uz       String?
+  title_ru       String?
+  content        String
+  content_uz     String?
+  content_ru     String?
+  published      Boolean  @default(false)
+  views          Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Setting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}
